@@ -1,0 +1,104 @@
+//Where we can get all of our images
+https://hub.docker.com/ 
+
+docker version
+docker info
+docker run <image> //start a container of the image(if doesn't exist install image then run the container)
+docker ps //currently running containers
+docker ps -a //all history of docker containers
+docker images //shows all images in your docker
+
+docker run -d --name <name-you-want> -p <PortHost:PortServer> <image> //-d = detached don't see what's going on int the background
+docker run -i <image> //interactive option regarding containers
+
+docker pull <image>:version-number//copies images to docker host
+docker rmi <image>:version //remove images from docker host
+docker rmi $(docker image -q) // remove all images in this docker
+docker rm <container-name> //remove container
+docker stop <container-name> //stops running container with name specified
+docker stop $(docker ps -aq) //stops all running containers
+docker rm $(docker ps -aq) // removes all containers
+docker rm <container-name>// removes container with specified name
+
+ctrl+p+q //Exit container but leave it running
+
+
+// same ip address/port for both advertise-addr and listen-addr
+// standard port number is 2377 and docker ip is 172.17.0.1 on windows
+docker swarm init --advertise-addr <ip-address of machine (usually starts with 172.)>:<port-number> --listen-addr <ip-address of machine>:<port-number> 
+
+//get the token needed to join as a manager node or a worker node
+docker swarm join-token manager
+docker swarm join-token worker
+
+//see all nodes in a swarm
+docker node ls
+
+docker swarm join
+docker service create
+docker service scale
+docker service update
+
+// Run the docker container ubuntu interactively (i) through the terminal (t)
+docker container run -it ubuntu
+
+// Removes stopped containers
+docker container prune
+
+//Shows the log of a container
+docker container logs -f <id-of-container>
+
+Executes whatever command you specify inside of the running container
+docker container exec -it <name-of-container> <command>
+
+docker container commit -a "<author-name> contact@<domain-name.com>" <name-of-container-based-off-of> <new-container-name>
+
+DOCKERFILE
+	FROM <image>:<version>
+	MAINTAINER <author-name> "<email-address>"
+	RUN <commands to run>
+	// Copy is for local files only, ADD is local and remote files to be added
+	COPY <file-name> .
+	ADD <file-name> .
+	//CMD can be overridden, ENTRYPOINT cannot
+	CMD ["<command-to-run"]
+	ENTRYPOINT ["<keyword1>", "keyword2", "keywordN"]
+
+FROM ubuntu:latest
+
+///////////////////////////////////////////////////////////////////
+MAINTAINER Richard Chesterwood "contact@virtualpairprogrammers.com"
+
+RUN apt-get update && apt-get install -y openjdk-8-jdk
+
+WORKDIR /usr/local/bin/
+
+ADD test-program.jar .
+
+//Instead of WORKDIR and ADD... You could use the command below
+// COPY test-program.jar .
+
+
+ENTRYPOINT ["java", "-jar", "test-program.jar"]
+//Could use CMD ["java", "-jar", "test-program.jar"]
+
+///////////////////////////////////////////////////////////////////
+
+//-t means tag the image with a name . means current directory
+docker image build -t jdk-image-from-dockerfile .
+
+/usr/local/bin is usually the working directory you want when you are developing webapps
+
+docker image push <image-name>
+
+To rename an image run
+docker image tag <id-of-image> <author>/<name-of-repository>
+
+think of the CMD parameters as the service that the container will provide
+
+docker container run -e MYSQL_ROOT_PASSWORD=password-d mysql:5.7
+docker container run -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=fleetman -d mysql
+
+//run bash in a container interactively
+docker container exec -it <container-id> bash
+

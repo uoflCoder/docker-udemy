@@ -1,0 +1,5 @@
+docker image pull <image-directory>
+<image-directory> example: virtualpairprogrammers/fleetman-webapp
+
+docker container run --name webapp -p 8080:8080 virtualpairprogrammers/fleetman-webapp
+
